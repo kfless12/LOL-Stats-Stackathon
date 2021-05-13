@@ -44,3 +44,26 @@ body{
   padding: 6px 12px;
   border-top: none;
 }
+#left_right_container, #additionplayerinfo, #player{
+  display: flex;
+  flex-direction: row;
+
+
+}
+#mainplayerinfo>* {
+  margin: 0
+}
+
+#winners, #losers{
+  display: flex;
+  flex-direction: column;
+}
+
+#winners>ul, #losers>ul, #mainplayer>ul, #detailcontainer{
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+
