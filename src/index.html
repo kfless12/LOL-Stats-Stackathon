@@ -22,14 +22,22 @@
 <!-- Tab content -->
 <div id="Summoner Stats" class="tabcontent">
 	<h1> Summoner Statistics and Information</h1>
-	<h1 id="summonerName"></h1>
-  <img id="profileIcon" src="" alt="Loading..." width="80" height="80"/>
-  <ul id = "Solorankstats">
-    <p id="Solorank"></p>
-    <p id="wins"></p>
-    <p id="losses"></p>
-    <p id="win loss ratio"></p>
-  </ul>
+  <div id='left_right_container'>
+    <div id='left_container'>
+	    <h1 id="summonerName"></h1>
+      <img id="profileIcon" src="" alt="Loading..." width="80" height="80"/>
+      <ul id = "Solorankstats">
+        <p id="Solorank"></p>
+        <p id="wins"></p>
+        <p id="losses"></p>
+        <p id="win loss ratio"></p>
+      </ul>
+    </div>
+    <div id='right_container'>
+      <ul id='outer_rankedcontainer'>
+      </ul>
+    </div>
+  </div>    
   <h2>top 3 champions played</h2>
   <ul id="top3champs"></ul>
 </div>
