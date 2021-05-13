@@ -1,0 +1,23 @@
+body {
+    background: #dfdfdf48;
+    color: #000;
+    overflow: hidden;
+}
+
+p.notify {
+    background: #c3c3c357;
+    margin: 0;
+    padding: 20px;
+    text-transform: uppercase;
+    -webkit-app-region: drag;
+}
+
+input{
+    padding: 12px;
+}
+
+#closeBtn{
+    cursor: pointer;
+    padding: 20px;
+    text-decoration: underline;
+}
