@@ -34,15 +34,14 @@ function itemsbyid(arr){
 
 }
 
-axios.defaults.headers.common["X-Riot-Token"] =
-	"RGAPI-10ddacbd-7437-47ff-9643-c4190ec04c08";
+axios.defaults.headers.common["X-Riot-Token"] = process.env.RGAPI_KEY;
 
 function caseAdjust(str) {
 	const lower = str.toLowerCase();
 	return str.charAt(0).toUpperCase() + lower.slice(1);
 }
 
-const kayn = Kayn("RGAPI-10ddacbd-7437-47ff-9643-c4190ec04c08")({
+const kayn = Kayn(process.env.RGAPI_KEY)({
 	region: REGIONS.NORTH_AMERICA,
 	apiURLPrefix: "https://%s.api.riotgames.com",
 	locale: "en_US",
