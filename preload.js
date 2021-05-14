@@ -45,36 +45,29 @@ function caseAdjust(str) {
 
 const kayn = Kayn(process.env.RGAPI_KEY)({
 	region: REGIONS.NORTH_AMERICA,
-	apiURLPrefix: "https://%s.api.riotgames.com",
-	locale: "en_US",
-	debugOptions: {
-		isEnabled: true,
-		showKey: false,
-	},
-	requestOptions: {
-		shouldRetry: true,
-		numberOfRetriesBeforeAbort: 3,
-		delayBeforeRetry: 1000,
-		burst: true,
-		shouldExitOn403: false,
-	},
-	cacheOptions: {
-		cache: false,
-		timeToLives: {
-			useDefault: false,
-			byGroup: {},
-			byMethod: {},
-		},
-	},
+    apiURLPrefix: 'https://%s.api.riotgames.com',
+    locale: 'en_US',
+    debugOptions: {
+        isEnabled: true,
+        showKey: false,
+    },
+    requestOptions: {
+        shouldRetry: true,
+        numberOfRetriesBeforeAbort: 3,
+        delayBeforeRetry: 1000,
+        burst: true,
+        shouldExitOn403: false,
+    },
+    cacheOptions: {
+        cache: null,
+        timeToLives: {
+            useDefault: false,
+            byGroup: {},
+            byMethod: {},
+        },
+    },
 });
 
-let DDragon, championIdMap;
-async function preloadDragonData() {
-	DDragon = await kayn.DDragon.ProfileIcon.list();
-	championIdMap = await kayn.DDragon.Champion.listDataByIdWithParentAsId();
-}
-
-preloadDragonData();
 
 window.addEventListener("DOMContentLoaded", async () => {
 	await ipcRenderer.invoke("dark-mode");
@@ -84,11 +77,13 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 	document.getElementsByTagName('body')[0].innerHTML = blankhtml
 	const { accountId, id, summonerLevel, profileIconId, puuid, name } =
 		await kayn.Summoner.by.name(`${message}`);
-	document.getElementById("summonerName").innerHTML = message;
+	
+	document.getElementById("summonerName").innerHTML = ` ${message}  <h5>Summoner level: ${summonerLevel} </h5>`;
+
 	const profileicon = document.getElementById("profileIcon");
 	profileicon.setAttribute(
 		"src",
-		`http://ddragon.leagueoflegends.com/cdn/11.10.1/img/profileicon/${DDragon.data[profileIconId].image.full}`
+		`http://ddragon.leagueoflegends.com/cdn/11.10.1/img/profileicon/${profileIconId}.png`
 	);
 
 	const { data } = await axios.get(
@@ -126,48 +121,20 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 	let top3champs = [champions[0], champions[1], champions[2]];
 	let top3wnames = [];
 	top3champs.forEach((e) => {
-		top3wnames.push({ ...e, name: championIdMap.data[e.championId].name });
+		const name = championlist.find(champ=>champ.key == `${e.championId}`)
+		top3wnames.push({ ...e, name});
 	});
 
 	top3wnames.forEach((e) => {
 		const achamp = document.createElement("img");
 		achamp.setAttribute(
 			"src",
-			`../GameAssets/img/champion/tiles/${e.name.replace(/\s/g, '')}_0.jpg`
+			`../GameAssets/img/champion/tiles/${e.name.id.replace(/\s/g, '')}_0.jpg`
 		);
 		achamp.setAttribute("height", 60);
 		achamp.setAttribute("width", 60);
 		document.getElementById("top3champs").appendChild(achamp);
 	});
-
-	// const processMatch = (championIdMap, summonerId, match) => {
-	//     const { participantId } = match.participantIdentities.find(
-	//         pi => pi.player.summonerId === summonerId,
-	//     )
-	//     const participant = match.participants.find(
-	//         p => p.participantId === participantId,
-	//     )
-	//     const champion = championIdMap.data[participant.championId]
-	//     return {
-	//         gameCreation: match.gameCreation,
-	//         seasonId: match.seasonId,
-	//         didWin:
-	//             participant.teamId ===
-	//             match.teams.find(({ win }) => win === 'Win').teamId,
-	//         championName: champion.name,
-	//     }
-	// }
-
-	const main = async () => {
-		const { matches } = await kayn.Matchlist.by
-			.accountID(accountId)
-			.query({ queue: 420 });
-		const gameIds = matches.slice(0, 10).map(({ gameId }) => gameId);
-		const matchDtos = await Promise.all(gameIds.map(kayn.Match.get));
-		// `processor` is a helper function to make the subsequent `map` cleaner.
-		const processor = (match) => processMatch(championIdMap, id, match);
-		const results = await Promise.all(matchDtos.map(processor));
-	};
 
 	const { matches } = await kayn.Matchlist.by.accountID(accountId);
 	const gameIds = matches.slice(0, 25).map(({ gameId }) => gameId);
@@ -175,10 +142,9 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 
     const recentmatches = matchDtos.slice(0, 3)
 
-
+	
     // place top 3 matches in summoner stats view
 	recentmatches.forEach((e) => {
-		const list = document.createElement("ul");
 		const div1 = document.createElement("div");
 		div1.setAttribute("id", "mainplayerinfo");
 		const div2 = document.createElement("div");
@@ -186,16 +152,19 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 		const head = document.createElement("h3");
 		head.innerHTML = `${message}, GameType: ${e.gameMode}`;
 		const mainchamppic = document.createElement("img");
-		list.appendChild(div2);
 		div1.appendChild(head);
 		document.getElementById("outer_rankedcontainer").appendChild(div1);
-		document.getElementById("outer_rankedcontainer").appendChild(list);
+		document.getElementById("outer_rankedcontainer").appendChild(div2);
 		const losingteam = document.createElement("ul");
 		losingteam.setAttribute("id", "losing side");
 		const winningteam = document.createElement("ul");
 		winningteam.setAttribute("id", "winning side");
 		div2.appendChild(losingteam);
 		div2.appendChild(winningteam);
+
+		div1.setAttribute('onclick', `showNode(${e.gameId})`)
+		div2.setAttribute('style', "display:none;")
+		div2.setAttribute('class', `${e.gameId}`)
 
 		let playerinfo = e.participants.map((part) => {
 			const sumname = e.participantIdentities.find(
@@ -303,6 +272,10 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
         mainplayerdiv.appendChild(mainplayerlist)
         document.getElementById('Recent Matches').appendChild(matchcontainer)
 
+		mainplayerlist.setAttribute('onclick', `showNode('A${e.gameId}')`)
+		detailcontainer.setAttribute('style', "display:none;")
+		detailcontainer.setAttribute('class', `A${e.gameId}`)
+
              playerinfo = e.participants.map((part) => {
 			const sumname = e.participantIdentities.find(
 				(id) => id.participantId === part.participantId
@@ -374,8 +347,18 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 
 
 
+	const active = await kayn.CurrentGame.by.summonerID(id)
+	
+		if(active.bannedChampions){
+			const bannedChampionsdiv = document.createElement('div')
+			bannedChampions.setAttribute('id', 'bannedchamps')
+			for(let champ of active.bannedChampions){
+				console.log(champ)
+			}
 
-
+		}else{
+			document.getElementById('activematchcontainer').innerHTML = "No Active Match"
+		}
     
 
 

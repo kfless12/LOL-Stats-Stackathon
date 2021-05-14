@@ -19,3 +19,13 @@ function openPage(evt, pageName) {
   document.getElementById(pageName).style.display = "block";
   evt.currentTarget.className += " active";
 }
+
+function showNode(className){
+  const element = document.getElementsByClassName(className)
+  if(element[0].style.display === "flex"){
+    element[0].style.display = "none"
+  } else{
+    element[0].style.display = "flex"
+  }
+  
+}
