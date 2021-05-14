@@ -11,10 +11,10 @@ const blankhtml =  `<!-- Tab links -->
 <!-- Tab content -->
 <div id="Summoner Stats" class="tabcontent">
 	<h1> Summoner Statistics and Information</h1>
+  <h1 id="summonerName"></h1>
+  <img id="profileIcon" src="" alt="Loading..." width="80" height="80" />
   <div id='left_right_container'>
     <div id='left_container'>
-	    <h1 id="summonerName"></h1>
-      <img id="profileIcon" src="" alt="Loading..." width="80" height="80"/>
       <ul id = "Solorankstats">
         <p id="Solorank"></p>
         <p id="wins"></p>
@@ -38,6 +38,8 @@ const blankhtml =  `<!-- Tab links -->
 
 <div id="Active Match" class="tabcontent">
   <h3>Active Match</h3>
+  <body id="activematchcontainer">
+  </body>
  
 </div>
 <div id="Twitch" class="tabcontent">
