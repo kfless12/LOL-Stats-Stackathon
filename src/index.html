@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'">
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
 <title> NMPL Worksheet </title>
 <link rel="stylesheet" href="main.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -53,6 +55,12 @@
 </div>
 <div id="Twitch" class="tabcontent">
   <h3>twitch</h3>
+  <div id="twitch-embed"><iframe id="twitch-embedframe"width=1100 height=800></iframe></div>
+
+  
+
+    <!-- Create a Twitch.Embed object that will render within the "twitch-embed" element -->
+    
  
 </div>
 <div id="TFT Stats" class="tabcontent">
@@ -63,6 +71,6 @@
   <h3>Valorant Stats</h3>
  
 </div>
-<script src = 'worksheet.js'></script>
+<script src = 'windowhtml.js'></script>
 </body>
 </html>

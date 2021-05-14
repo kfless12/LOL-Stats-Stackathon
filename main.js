@@ -1,9 +1,30 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, session } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');   
 const { nativeTheme } = require('electron/main');
 
+let patchwindow
+
 function createWindow () {
+  session.defaultSession.webRequest.onHeadersReceived({
+    urls: [
+      'https://player.twitch.tv/*',
+      'https://embed.twitch.tv/*'
+    ]
+  }, (details, cb) => {
+    var responseHeaders = details.responseHeaders;
+
+
+    delete responseHeaders['Content-Security-Policy'];
+    //console.log(responseHeaders);
+
+    cb({
+      cancel: false,
+      responseHeaders
+    });
+  });
+
+
   const win = new BrowserWindow({
     width: 1400,
     height: 1000,
@@ -31,12 +52,29 @@ function createWindow () {
 
   win.loadFile('./src/index.html')
    
+  const patchwindow = new BrowserWindow({
+    parent: win,
+    width: 800,
+    height: 900,
+    show: false,
+    modal: true,
+    skipTaskbar: true,
+    titleBarStyle: 'hidden',
+    autoHideMenuBar: true,
+})
+patchwindow.on('close', function(evt){
+  evt.preventDefault();
+  patchwindow.hide()
+})
+
+patchwindow.loadURL('https://na.leagueoflegends.com/en-us/news/game-updates/patch-11-10-notes/')
   
    const template = [
        { label: "LOL Stats",
     submenu: [
         {label: 'new summoner', click(){popup.show()}},
-        {label: 'current patch information'},
+        {label: 'current patch information',
+      click(){patchwindow.show()}},
         {label: 'pros', click(){console.log("pros")}},
         {role: 'quit'}
     ]},
@@ -82,6 +120,8 @@ function createWindow () {
 
 app.whenReady().then(() => {
     createWindow()
+
+
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

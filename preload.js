@@ -79,6 +79,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 ipcRenderer.on("getSummonerName", async (event, message) => {
+	
 	const { accountId, id, summonerLevel, profileIconId, puuid, name } =
 		await kayn.Summoner.by.name(`${message}`);
 	document.getElementById("summonerName").innerHTML = message;
@@ -130,7 +131,7 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 		const achamp = document.createElement("img");
 		achamp.setAttribute(
 			"src",
-			`../GameAssets/img/champion/tiles/${e.name}_0.jpg`
+			`../GameAssets/img/champion/tiles/${e.name.replace(/\s/g, '')}_0.jpg`
 		);
 		achamp.setAttribute("height", 60);
 		achamp.setAttribute("width", 60);
@@ -209,7 +210,7 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 			};
 		});
 
-        let mainplayer = playerinfo.find((mainp) => mainp.summonername === message)
+        let mainplayer = playerinfo.find((mainp) => mainp.summonername.toLowerCase() === message.toLowerCase())
 
 		mainchamppic.setAttribute(
 			"src",
@@ -321,7 +322,7 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 			};
 		});
 
-        mainplayer = playerinfo.find((mainp) => mainp.summonername === message)
+        mainplayer = playerinfo.find((mainp) => mainp.summonername.toLowerCase() === message.toLowerCase())
 
         mainplayerlist.innerHTML = `
             <img src="../GameAssets/11.10.1/img/champion/${mainplayer.championimg}" />
@@ -365,6 +366,7 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 
 
     })
+	document.getElementById("twitch-embedframe").setAttribute('src', `https://player.twitch.tv/?channel=${message}&parent=localhost&muted=true`)
 
 
 
