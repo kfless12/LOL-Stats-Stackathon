@@ -5,6 +5,8 @@ const listofchampinfo = require("./GameAssets/11.10.1/data/en_US/champion.json")
 const championlist = Object.values(listofchampinfo.data);
 const listofsumspells = require("./GameAssets/11.10.1/data/en_US/summoner.json");
 const sumspelllist = Object.values(listofsumspells.data);
+const  blankhtml = require('./blankhtml')
+
 
 function champinfobyID(id) {
 	for (let i of championlist) {
@@ -79,7 +81,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 ipcRenderer.on("getSummonerName", async (event, message) => {
-	
+	document.getElementsByTagName('body')[0].innerHTML = blankhtml
 	const { accountId, id, summonerLevel, profileIconId, puuid, name } =
 		await kayn.Summoner.by.name(`${message}`);
 	document.getElementById("summonerName").innerHTML = message;
@@ -375,14 +377,6 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 
 
     
-
-
-
-
-
-
-
-
 
 
 

@@ -75,7 +75,6 @@ patchwindow.loadURL('https://na.leagueoflegends.com/en-us/news/game-updates/patc
         {label: 'new summoner', click(){popup.show()}},
         {label: 'current patch information',
       click(){patchwindow.show()}},
-        {label: 'pros', click(){console.log("pros")}},
         {role: 'quit'}
     ]},
        {
