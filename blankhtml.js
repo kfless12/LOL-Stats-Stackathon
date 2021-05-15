@@ -10,10 +10,10 @@ const blankhtml =  `<!-- Tab links -->
 
 <!-- Tab content -->
 <div id="Summoner Stats" class="tabcontent" style="display:block;">
-	<h1> Summoner Statistics and Information</h1>
-  <div id="Statsheader">
-  <img id="profileIcon" src="" alt="Loading..." width="80" height="80" />
-  <h1 id="summonerName"></h1>
+    <h1> Summoner Statistics and Information</h1>
+    <div id="Statsheader">
+    <img id="profileIcon" src="" alt="Loading..." width="80" height="80" />
+    <h1 id="summonerName"></h1>
   </div>
   <div id='left_right_container'>
     <div id='left_container'>
@@ -46,7 +46,6 @@ const blankhtml =  `<!-- Tab links -->
       <div id='100'></div>
       <div id='200'></div>
     </div>
-  </div>
   </div>
  
 </div>

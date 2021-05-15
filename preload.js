@@ -14,18 +14,21 @@ function getperkimages(style, substyle, arrayperk){
 	let arr = []
 	let Aperk = perklist.find(e=> e.id === style)
 	arr.push(`../GameAssets/img/${Aperk.icon}`)
-	let Bperk = perklist.find(e=> e.id === style)
+	let Bperk = perklist.find(e=> e.id === substyle)
 	arr.push(`../GameAssets/img/${Bperk.icon}`)
 	arrayperk.forEach((e, i)=>{
 		if(i>5){
-			arr.push(`../GameAssets/img/perk-images/StatMods/${statmods[`${Bperk.slots[i-6]}`]}`)
-		}else if(i>3){
-			arr.push(`../GameAssets/img/${Bperk.slots.map(slot => slot.runes.find(rune=> rune.id === e)).icon}`)
+			arr.push(`../GameAssets/img/perk-images/StatMods/${statmods[`${e}`]}`)
+		}else {
+			let perk
+			perklist.forEach(mainperk=>{ mainperk.slots.forEach(slot=>{
+				slot.runes.forEach(singrune => {
+				if(singrune.id === e){
+					perk = singrune.icon
+					arr.push(`../GameAssets/img/${perk}`)
+				}
+			}) })})
 		}
-		else{
-			arr.push(`../GameAssets/img/${Aperk.slots.map(slot => slot.runes.find(rune=> rune.id === e)).icon}`)
-		}
-
 	})
 	return arr
 }
@@ -367,15 +370,14 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 
 	try{
 			const active = await axios.get(`https://na1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${id}`)
-			console.log(active)
 			const bannedchamps = document.getElementById('banndeChamps')
+			bannedchamps.innerHTML = `<h2> Banned Champions </h2>`
 			const maindiv = document.getElementById('activematchcontainer')
 			const gameStats = document.createElement('div')
-			gameStats.innerHTML=`<h3>Game Mode: ${active.data.gameMode}</h3><h3>Game Time: ${Math.floor(active.data.gameLength/60)}</h3>`
+			gameStats.innerHTML=`<h3>Game Mode: ${active.data.gameMode}</h3><h3>Game Time: ${Math.floor(active.data.gameLength/60)} Minutes</h3>`
 			maindiv.appendChild(gameStats)
 			active.data.bannedChampions.forEach(champ =>{
 				if(champ.championId > 0){
-				console.log(champinfobyID(champ.championId))
 				const bannedimg = champinfobyID(champ.championId).image.full;
 				const newnode = document.createElement('img')
 				newnode.setAttribute('src', `../GameAssets/11.10.1/img/champion/${bannedimg}`)

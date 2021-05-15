@@ -215,3 +215,27 @@ padding-right: 25px;
   
 
 }
+#activematchcontainer{
+  display: flex;
+  flex-direction: column;
+}
+#banndeChamps{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+}
+#banndeChamps>img{
+  hieght: 50px;
+  width: 70px;
+
+}
+#game{
+  display: flex;
+}
+ul{
+  list-style-type: none;
+}
+[id = '200']>ul, [id='100']>ul{
+  display: flex;
+  flex-direction:row;
+}
