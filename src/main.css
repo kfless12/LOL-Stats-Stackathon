@@ -1,10 +1,19 @@
-body{
-  background: #262626;
-  color: #fff;
-  font-family: 'Montserrat';
-  margin: 0
 
+@font-face {
+  font-family: "League";
+  src: url('./Friz\ Quadrata\ Regular.ttf');
 }
+
+
+html{
+  background-image:
+    linear-gradient(to bottom, rgb(57 78 199 / 66%), rgb(142 70 140 / 24%)),
+    url('./artur-sadlos-leg-more-sh210-background-as-v002.jpg');
+  color: cornsilk;
+  font-family: 'League';
+  /* margin-bottom: 100%; */
+  padding-bottom: 24%;
+ }
 /* Style the tab */
 .tab {
   display: flex;
@@ -39,19 +48,71 @@ body{
 
 /* Style the tab content */
 .tabcontent {
-  font-family: 'Montserrat';
+  font-family: 'League';
   display: none; 
   padding: 6px 12px;
   border-top: none;
 }
+#Statsheader{
+  display: flex;
+  flex-direction: row;
+  margin: 0; 
+}
+#Statsheader > *, #Statsheader > h1 >*{
+  margin: 0;
+}
+#Statsheader > img{
+  border-radius: 60%;
+}
 #left_right_container, #additionplayerinfo, #player{
   display: flex;
   flex-direction: row;
+  align-content: stretch;
 
 
 }
-#mainplayerinfo>* {
-  margin: 0
+#left_right_container{
+  width: 100%;
+  justify-content: space-around;
+}
+#right_container{
+  width: 75%
+}
+#left_container>h2{
+  font-size: 20px;
+  color:goldenrod;
+
+
+}
+#mainplayerinfo{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content:flex-end;
+  padding: 10px;
+  padding-left: 120px;
+}
+#mainplayerinfo>h3{
+order: 1;
+padding-left: 50px;
+padding-right: 25px;
+
+}
+#mainplayerinfo>img{
+  order: 1;
+  width: 10%;
+  height: 25%;
+
+
+}
+#mainplayerinfo>h4{
+padding-left: 2px;
+padding-right: 25px;
+
+}
+#outer_rankedcontainer{
+  padding: 0px;
+  margin-top: 25px;
+  width:100%;
 }
 
 #winners, #losers{
@@ -63,7 +124,94 @@ body{
   display: flex;
   flex-direction: row;
 }
+#top3champs{
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+#top3champs>*{
+  border: solid;
+  border-radius: 10%;
+  border-color: black;
+}
+#summonerName{
+  margin: 0;
 
+}
+#Solorankstats{
+  padding: 0;
+  background-color: #2e373f52;
 
+}
 
+#additionplayerinfo{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-left: 150px;
+}
 
+#player{
+  display: flex;
+  align-content:center;
+
+}
+
+#player>ul{
+  padding: 0;
+  list-style-type: none;
+  order: 2;
+}
+#player>img{
+  order: 0;
+  align-self:center;
+  padding-right: 10px;
+  height:-webkit-fill-available;
+  width: 15%;
+}
+#player>h5{
+  order: 1;
+  padding-right: 10px;
+}
+
+#mainplayer>ul{
+  display: flex;
+  flex-direction:row;
+  justify-content:space-evenly;
+  list-style-type: none;
+  padding-left: 5px;
+  align-items: center;
+  font-size: 1.3em;
+}
+#winners{
+  display: flex;
+
+}
+#losers{
+  display: flex;
+  
+}
+#winners>h3 {
+  align-self:center;
+  font-size: 2em;
+  margin: 0;
+  color: #458a14;
+  text-shadow: 2px 2px black;
+  
+}
+#losers>h3{
+  align-self:center;
+  font-size: 2em;
+  margin: 0;
+  color: #8a1c14;
+  text-shadow: 2px 2px black;
+  
+}
+#winners>ul, #losers>ul{
+  padding-left: 0;
+  list-style-type: none;
+  align-items:center;
+  
+
+}

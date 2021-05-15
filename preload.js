@@ -6,6 +6,29 @@ const championlist = Object.values(listofchampinfo.data);
 const listofsumspells = require("./GameAssets/11.10.1/data/en_US/summoner.json");
 const sumspelllist = Object.values(listofsumspells.data);
 const  blankhtml = require('./blankhtml')
+const perklist = require("./GameAssets/11.10.1/data/en_US/runesReforged.json")
+
+let statmods = {5004: 'StatModsAdaptiveForceIcon.png', 5003: 'StatModsMagicResIcon.png', 5009: 'StatModsCDRScalingIcon.png', 5002: 'StatModsArmorIcon.png' , 5008: 'StatModsAdaptiveForceIcon.png' , 5001: 'StatModsHealthScalingIcon.png', 5007: 'StatModsCDRScalingIcon.png', 5005: 'StatModsAttackSpeedIcon.png', 5010: 'StatModsAdaptiveForceIcon.png', 5006: 'StatModsAdaptiveForceIcon.png'}
+
+function getperkimages(style, substyle, arrayperk){
+	let arr = []
+	let Aperk = perklist.find(e=> e.id === style)
+	arr.push(`../GameAssets/img/${Aperk.icon}`)
+	let Bperk = perklist.find(e=> e.id === style)
+	arr.push(`../GameAssets/img/${Bperk.icon}`)
+	arrayperk.forEach((e, i)=>{
+		if(i>5){
+			arr.push(`../GameAssets/img/perk-images/StatMods/${statmods[`${Bperk.slots[i-6]}`]}`)
+		}else if(i>3){
+			arr.push(`../GameAssets/img/${Bperk.slots.map(slot => slot.runes.find(rune=> rune.id === e)).icon}`)
+		}
+		else{
+			arr.push(`../GameAssets/img/${Aperk.slots.map(slot => slot.runes.find(rune=> rune.id === e)).icon}`)
+		}
+
+	})
+	return arr
+}
 
 
 function champinfobyID(id) {
@@ -97,9 +120,9 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 		"src",
 		`../GameAssets/ranked-emblems/Emblem_${caseAdjust(data[0].tier)}.png`
 	);
-	solorankimage.setAttribute("width", `120`);
-	solorankimage.setAttribute("height", `120`);
-	solorank.appendChild(solorankimage);
+	solorankimage.setAttribute("width", `150`);
+	solorankimage.setAttribute("height", `150`);
+	document.getElementById('Solorankstats').insertBefore(solorankimage, solorank);
 
 	document.getElementById(
 		"wins"
@@ -150,7 +173,7 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 		const div2 = document.createElement("div");
 		div2.setAttribute("id", "additionplayerinfo");
 		const head = document.createElement("h3");
-		head.innerHTML = `${message}, GameType: ${e.gameMode}`;
+		head.innerHTML = `GameType: ${e.gameMode}`;
 		const mainchamppic = document.createElement("img");
 		div1.appendChild(head);
 		document.getElementById("outer_rankedcontainer").appendChild(div1);
@@ -187,8 +210,8 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
 			"src",
 			`../GameAssets/11.10.1/img/champion/${mainplayer.championimg}`
 		);
-		mainchamppic.setAttribute("height", 25);
-		mainchamppic.setAttribute("width", 25);
+		mainchamppic.setAttribute("height", 50);
+		mainchamppic.setAttribute("width", 50);
 		div1.appendChild(mainchamppic);
 		let element = document.createElement("h4");
 		element.innerHTML = `${mainplayer.result}`;
@@ -319,8 +342,8 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
                         <li>Gold: ${player.goldEarned}</li>
                         <li> Wards placed: ${player.wardsPlaced}</li>
                         <li><ul id='items'>${player.itemimgs.map(e=>{
-                            return`<img src='${e}' width= 25 height=25 />`
-                        })}</ul></li>
+                            return`<img src='${e}' width= 30 height=30 />`
+                        }).join('')}</ul></li>
                     `
             } else{
                 const playlist = document.createElement('ul')
@@ -334,32 +357,51 @@ ipcRenderer.on("getSummonerName", async (event, message) => {
                         <li> Wards placed: ${player.wardsPlaced}</li>
                         <li><ul id='items'>${player.itemimgs.map(e=>{
                             return`<img src='${e}' width= 25 height=25 />`
-                        })}</ul></li>
+                        }).join('')}</ul></li>
                     `
             }
         })
 
 
     })
-	document.getElementById("twitch-embedframe").setAttribute('src', `https://player.twitch.tv/?channel=${message}&parent=localhost&muted=true`)
 
-
-
-
-
-	const active = await kayn.CurrentGame.by.summonerID(id)
-	
-		if(active.bannedChampions){
-			const bannedChampionsdiv = document.createElement('div')
-			bannedChampions.setAttribute('id', 'bannedchamps')
-			for(let champ of active.bannedChampions){
-				console.log(champ)
-			}
-
-		}else{
-			document.getElementById('activematchcontainer').innerHTML = "No Active Match"
+	try{
+			const active = await axios.get(`https://na1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${id}`)
+			console.log(active)
+			const bannedchamps = document.getElementById('banndeChamps')
+			const maindiv = document.getElementById('activematchcontainer')
+			const gameStats = document.createElement('div')
+			gameStats.innerHTML=`<h3>Game Mode: ${active.data.gameMode}</h3><h3>Game Time: ${Math.floor(active.data.gameLength/60)}</h3>`
+			maindiv.appendChild(gameStats)
+			active.data.bannedChampions.forEach(champ =>{
+				if(champ.championId > 0){
+				console.log(champinfobyID(champ.championId))
+				const bannedimg = champinfobyID(champ.championId).image.full;
+				const newnode = document.createElement('img')
+				newnode.setAttribute('src', `../GameAssets/11.10.1/img/champion/${bannedimg}`)
+					bannedchamps.appendChild(newnode)
+				}
+			})
+			active.data.participants.forEach(part=>{
+				const champ = champinfobyID(part.championId).image.full;
+				const spells = sumspellinfobyID([part.spell1Id, part.spell2Id])
+				const player = document.createElement('ul')
+				const perks = getperkimages(part.perks.perkStyle, part.perks.perkSubStyle, part.perks.perkIds)
+				player.innerHTML = `<img src="../GameAssets/11.10.1/img/champion/${champ}" width=50 height=50 />
+									<li>${part.summonerName}</li>
+									<li><ul id="sumSpells"><img src='${spells[0]}' width=25 height=25/><img src='${spells[1]}' width=25 height=25/></ul></li>
+									<li><ul id='perks'>${perks.map(perk=>`<img src='${perk}' width=25 height=25 />`).join('')}</ul></li>
+								`
+				document.getElementById(`${part.teamId}`).appendChild(player)
+			})
+		}catch(err){
+			console.log(err)
+			document.getElementById('activematchcontainer').innerHTML = `<h1>No Active Matches...</h1>`
 		}
-    
+
+
+
+	document.getElementById("twitch-embedframe").setAttribute('src', `https://player.twitch.tv/?channel=${message}&parent=localhost&muted=true`)
 
 
 
